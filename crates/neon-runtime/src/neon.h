@@ -151,6 +151,16 @@ extern "C" {
   void Neon_Error_ThrowSyntaxErrorFromCString(const char *msg);
 
   bool Neon_Mem_SameHandle(v8::Local<v8::Value> v1, v8::Local<v8::Value> v2);
+
+  typedef void (*Neon_AsyncExecuteCallback)(void* arg, void **state);
+  typedef void (*Neon_AsyncResultCallback)(v8::Local<v8::Value> *err, v8::Local<v8::Value> *val, void *arg, void *state);
+
+  void Neon_Async_QueueWork(v8::Local<v8::Function> callback, 
+                            Neon_AsyncExecuteCallback execCallback, 
+                            void *execKernel,
+                            Neon_AsyncResultCallback resultCallback, 
+                            void *resultKernel,
+                            Neon_DropCallback dropCallback);
 }
 
 #endif

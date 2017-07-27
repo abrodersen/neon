@@ -1,0 +1,1 @@
+pub use internal::js::async::run_async;

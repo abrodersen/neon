@@ -1,6 +1,7 @@
 pub mod binary;
 pub mod error;
 pub mod class;
+pub mod async;
 
 use std::mem;
 use std::os::raw::c_void;

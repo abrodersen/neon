@@ -6,6 +6,7 @@
 #include "neon.h"
 #include "neon_string.h"
 #include "neon_class_metadata.h"
+#include "neon_async_worker.h"
 
 extern "C" void Neon_Call_SetReturn(v8::FunctionCallbackInfo<v8::Value> *info, v8::Local<v8::Value> value) {
   info->GetReturnValue().Set(value);
@@ -526,4 +527,16 @@ extern "C" void Neon_Error_ThrowSyntaxErrorFromCString(const char *msg) {
 
 extern "C" bool Neon_Mem_SameHandle(v8::Local<v8::Value> v1, v8::Local<v8::Value> v2) {
   return v1 == v2;
+}
+
+extern "C" void Neon_Async_QueueWork(v8::Local<v8::Function> callback, 
+                            Neon_AsyncExecuteCallback execCallback,
+                            void *execKernel,
+                            Neon_AsyncResultCallback resultCallback,
+                            void *resultKernel,
+                            Neon_DropCallback dropCallback)
+{
+  auto wrapper = new Nan::Callback(callback);
+  auto worker = new neon::AsyncWorkerHolder(wrapper, execCallback, execKernel, resultCallback, resultKernel, dropCallback);
+  Nan::AsyncQueueWorker(worker);
 }
